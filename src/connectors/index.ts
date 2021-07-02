@@ -67,8 +67,8 @@ export const walletconnect = new WalletConnectConnector({
 export const cryptoWallet = new CryptoWalletConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
   rpc: NETWORK_URLS,
-  bridge: 'REACT_APP_WALLETCONNECT_BRIDGE_URL',
-  qrcode: false,
+  bridge: WALLETCONNECT_BRIDGE_URL,
+  qrcode: true,
   pollingInterval: 15000,
 })
 
