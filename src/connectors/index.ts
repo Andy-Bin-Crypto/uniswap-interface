@@ -9,6 +9,7 @@ import getLibrary from '../utils/getLibrary'
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
+import { CryptoWalletConnector } from './CryptoWalletConnector'
 
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
@@ -60,6 +61,14 @@ export const walletconnect = new WalletConnectConnector({
   rpc: NETWORK_URLS,
   bridge: WALLETCONNECT_BRIDGE_URL,
   qrcode: true,
+  pollingInterval: 15000,
+})
+
+export const cryptoWallet = new CryptoWalletConnector({
+  supportedChainIds: SUPPORTED_CHAIN_IDS,
+  rpc: NETWORK_URLS,
+  bridge: 'REACT_APP_WALLETCONNECT_BRIDGE_URL',
+  qrcode: false,
   pollingInterval: 15000,
 })
 

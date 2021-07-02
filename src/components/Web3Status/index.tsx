@@ -9,7 +9,8 @@ import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 import PortisIcon from '../../assets/images/portisIcon.png'
 import WalletConnectIcon from '../../assets/images/walletConnectIcon.svg'
-import { fortmatic, injected, portis, walletconnect, walletlink } from '../../connectors'
+import CRYPTOWALLET_ICON_URL from '../../assets/images/cryptowalletIcon.webp'
+import { cryptoWallet, fortmatic, injected, portis, walletconnect, walletlink } from '../../connectors'
 import { NetworkContextName } from '../../constants/misc'
 import useENSName from '../../hooks/useENSName'
 import { useHasSocks } from '../../hooks/useSocksBalance'
@@ -139,6 +140,12 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
     return (
       <IconWrapper size={16}>
         <img src={WalletConnectIcon} alt={'WalletConnect'} />
+      </IconWrapper>
+    )
+  } else if (connector === cryptoWallet) {
+    return (
+      <IconWrapper size={16}>
+        <img src={CRYPTOWALLET_ICON_URL} alt={'Crypto.com Wallet'} />
       </IconWrapper>
     )
   } else if (connector === walletlink) {

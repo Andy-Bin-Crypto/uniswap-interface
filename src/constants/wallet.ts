@@ -5,7 +5,8 @@ import FORTMATIC_ICON_URL from '../assets/images/fortmaticIcon.png'
 import METAMASK_ICON_URL from '../assets/images/metamask.png'
 import PORTIS_ICON_URL from '../assets/images/portisIcon.png'
 import WALLETCONNECT_ICON_URL from '../assets/images/walletConnectIcon.svg'
-import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
+import CRYPTOWALLET_ICON_URL from '../assets/images/cryptowalletIcon.webp'
+import { cryptoWallet, fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 
 export interface WalletInfo {
   connector?: AbstractConnector
@@ -79,6 +80,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Login using Portis hosted wallet',
     href: null,
     color: '#4A6C9B',
+    mobile: true,
+  },
+  CRYPTO_WALLET: {
+    connector: cryptoWallet,
+    name: 'Crypto.com Wallet',
+    iconURL: CRYPTOWALLET_ICON_URL,
+    description: 'Connect to Crypto.com Defi Wallet',
+    href: null,
+    color: '#4196FC',
     mobile: true,
   },
 }
