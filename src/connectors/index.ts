@@ -9,12 +9,13 @@ import getLibrary from '../utils/getLibrary'
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
-import { CryptoWalletConnector } from './CryptoWalletConnector'
+import { CryptoWalletConnector } from 'cryptolink'
 
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 const WALLETCONNECT_BRIDGE_URL = process.env.REACT_APP_WALLETCONNECT_BRIDGE_URL
+const CRYPTOLINK_BRIDGE_URL = process.env.REACT_APP_CRYPTOLINK_BRIDGE_URL
 
 if (typeof INFURA_KEY === 'undefined') {
   throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
@@ -67,7 +68,7 @@ export const walletconnect = new WalletConnectConnector({
 export const cryptoWallet = new CryptoWalletConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
   rpc: NETWORK_URLS,
-  bridge: WALLETCONNECT_BRIDGE_URL,
+  bridge: CRYPTOLINK_BRIDGE_URL,
   qrcode: true,
   pollingInterval: 15000,
 })

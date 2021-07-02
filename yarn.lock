@@ -7391,6 +7391,10 @@ crypto-random-string@^1.0.0:
   resolved "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-1.0.0.tgz"
   integrity sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4=
 
+"cryptolink@github:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git":
+  version "1.0.0"
+  resolved "github:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git#ce380726252d00063c2008f12befe0d4ed514880"
+
 css-blank-pseudo@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npmjs.org/css-blank-pseudo/-/css-blank-pseudo-0.1.4.tgz"
