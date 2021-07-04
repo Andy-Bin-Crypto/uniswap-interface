@@ -21,6 +21,15 @@ export interface WalletInfo {
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
+  CRYPTO_WALLET: {
+    connector: cryptoWallet,
+    name: 'Crypto.com Wallet',
+    iconURL: CRYPTOWALLET_ICON_URL,
+    description: 'Connect to Crypto.com Defi Wallet',
+    href: null,
+    color: '#4196FC',
+    mobile: true,
+  },
   INJECTED: {
     connector: injected,
     name: 'Injected',
@@ -80,15 +89,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Login using Portis hosted wallet',
     href: null,
     color: '#4A6C9B',
-    mobile: true,
-  },
-  CRYPTO_WALLET: {
-    connector: cryptoWallet,
-    name: 'Crypto.com Wallet',
-    iconURL: CRYPTOWALLET_ICON_URL,
-    description: 'Connect to Crypto.com Defi Wallet',
-    href: null,
-    color: '#4196FC',
     mobile: true,
   },
 }
