@@ -7398,9 +7398,9 @@ crypto-random-string@^1.0.0:
   resolved "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-1.0.0.tgz"
   integrity sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4=
 
-"cryptolink@git+ssh:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git#develop":
+"cryptolink@git+https://github.com/Andy-Bin-Crypto/ncw-wallet-extention.git#develop":
   version "1.0.0"
-  resolved "git+ssh:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git#0d42ec3beb73688302caba0f686c9e31a03a9317"
+  resolved "git+https://github.com/Andy-Bin-Crypto/ncw-wallet-extention.git#4f6d4a3dd7ef4f68276678cbd845af161fa1ae44"
   dependencies:
     "@types/react-modal" "^3.12.0"
     react-modal "^3.14.3"
