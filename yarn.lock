@@ -7400,7 +7400,7 @@ crypto-random-string@^1.0.0:
 
 "cryptolink@git+ssh:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git#develop":
   version "1.0.0"
-  resolved "git+ssh:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git#3d63f94c5b24a444475c507b95a4d75e792dcfeb"
+  resolved "git+ssh:git@github.com:Andy-Bin-Crypto/ncw-wallet-extention.git#0d42ec3beb73688302caba0f686c9e31a03a9317"
   dependencies:
     "@types/react-modal" "^3.12.0"
     react-modal "^3.14.3"
