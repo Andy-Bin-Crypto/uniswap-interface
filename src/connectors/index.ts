@@ -15,7 +15,7 @@ const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
 const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 const WALLETCONNECT_BRIDGE_URL = process.env.REACT_APP_WALLETCONNECT_BRIDGE_URL
-const CRYPTOLINK_BRIDGE_URL = 'http://asta-ncw-wallet-connect.3ona.co/' //process.env.REACT_APP_CRYPTOLINK_BRIDGE_URL
+const CRYPTOLINK_BRIDGE_URL = 'https://asta-ncw-wallet-connect.3ona.co/' //process.env.REACT_APP_CRYPTOLINK_BRIDGE_URL
 
 if (typeof INFURA_KEY === 'undefined') {
   throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
