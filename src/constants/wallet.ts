@@ -23,7 +23,7 @@ export interface WalletInfo {
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   CRYPTO_WALLET: {
     connector: cryptoWallet,
-    name: 'Crypto.com Wallet',
+    name: 'Crypto.com DeFi Wallet',
     iconURL: CRYPTOWALLET_ICON_URL,
     description: 'Connect to Crypto.com Defi Wallet',
     href: null,
