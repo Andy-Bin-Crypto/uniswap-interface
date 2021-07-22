@@ -145,7 +145,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
   } else if (connector === cryptoWallet) {
     return (
       <IconWrapper size={16}>
-        <img src={CRYPTOWALLET_ICON_URL} alt={'Crypto.com Wallet'} />
+        <img src={CRYPTOWALLET_ICON_URL} alt={'Crypto.com | Wallet Extension'} />
       </IconWrapper>
     )
   } else if (connector === walletlink) {
