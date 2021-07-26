@@ -65,7 +65,7 @@
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
     "cross-env": "^7.0.2",
-    "cryptolink": "git+https://github.com/Andy-Bin-Crypto/ncw-wallet-extention.git#7fb913524e6de371ae8344761a9b1b5638d4e523",
+    "cryptolink": "git+https://github.com/Andy-Bin-Crypto/ncw-wallet-extention.git#126029b92302216826b53073465b805cd2b84978",
     "cypress": "^4.11.0",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.11.0",
