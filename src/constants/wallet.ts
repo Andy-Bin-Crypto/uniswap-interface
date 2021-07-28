@@ -28,7 +28,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Connect to Crypto.com | Wallet Extension',
     href: null,
     color: '#4196FC',
-    mobile: true,
   },
   INJECTED: {
     connector: injected,
