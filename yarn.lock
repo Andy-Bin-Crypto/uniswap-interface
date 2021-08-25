@@ -7405,15 +7405,6 @@ crypto-random-string@^1.0.0:
   resolved "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-1.0.0.tgz"
   integrity sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4=
 
-"cryptolink@git+https://github.com/Andy-Bin-Crypto/ncw-wallet-extention.git#79a1b015f61d951f82822659fa1331661aa3a92b":
-  version "1.0.0"
-  resolved "git+https://github.com/Andy-Bin-Crypto/ncw-wallet-extention.git#79a1b015f61d951f82822659fa1331661aa3a92b"
-  dependencies:
-    "@types/qrcode" "^1.4.1"
-    "@types/react-modal" "^3.12.0"
-    qrcode "^1.4.4"
-    react-modal "^3.14.3"
-
 css-blank-pseudo@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npmjs.org/css-blank-pseudo/-/css-blank-pseudo-0.1.4.tgz"
@@ -7911,6 +7902,16 @@ deferred-leveldown@~1.2.1:
   integrity sha512-uukrWD2bguRtXilKt6cAWKyoXrTSMo5m7crUdLfWQmu8kIm88w3QZoUL+6nhpfKVmhHANER6Re3sKoNoZ3IKMA==
   dependencies:
     abstract-leveldown "~2.6.0"
+
+"defilink@git+https://github.com/monacohq/ncw-wallet-connector.git#de6ec52ffee4db776cc1a412e9a7ce7c6ca2e129":
+  version "1.0.5"
+  resolved "git+https://github.com/monacohq/ncw-wallet-connector.git#de6ec52ffee4db776cc1a412e9a7ce7c6ca2e129"
+  dependencies:
+    "@types/qrcode" "^1.4.1"
+    "@types/react-modal" "^3.12.0"
+    qrcode "^1.4.4"
+    react-modal "^3.14.3"
+    ws "7.3.0"
 
 define-properties@^1.1.2, define-properties@^1.1.3:
   version "1.1.3"
