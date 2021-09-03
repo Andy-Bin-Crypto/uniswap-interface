@@ -7903,9 +7903,8 @@ deferred-leveldown@~1.2.1:
   dependencies:
     abstract-leveldown "~2.6.0"
 
-"defilink@git+https://github.com/monacohq/ncw-wallet-connector.git#de6ec52ffee4db776cc1a412e9a7ce7c6ca2e129":
+"defilink@file:./sdks/defilink":
   version "1.0.5"
-  resolved "git+https://github.com/monacohq/ncw-wallet-connector.git#de6ec52ffee4db776cc1a412e9a7ce7c6ca2e129"
   dependencies:
     "@types/qrcode" "^1.4.1"
     "@types/react-modal" "^3.12.0"
