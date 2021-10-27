@@ -9228,10 +9228,10 @@ deferred-leveldown@~1.2.1:
   dependencies:
     abstract-leveldown "~2.6.0"
 
-deficonnect@^1.1.0-alpha.27:
-  version "1.1.0-alpha.27"
-  resolved "https://registry.yarnpkg.com/deficonnect/-/deficonnect-1.1.0-alpha.27.tgz#3b4a5de4f6dc4d0befe8ec1004fa5bd76fb671ce"
-  integrity sha512-Z7ua8bfrITqsGQWU2IQ0Zsp3k8vpybkPdAFAmiYFwkkQMJa+FBzuL7ATMR4DehplJxEJ0YOlNfTP216igLESoQ==
+deficonnect@^1.1.0-alpha.28:
+  version "1.1.0-alpha.28"
+  resolved "https://registry.yarnpkg.com/deficonnect/-/deficonnect-1.1.0-alpha.28.tgz#9c49cc1de2e3aa807feb5e6ffd08bb2152278c84"
+  integrity sha512-sY8kpq2rUFe8yVO2Bee3qv30X6yNqQqKVa9UxdWaPFjXAH9B5HvXNiLtW35pmhE/Fh9JYqhz7w+EWA380rvzZg==
   dependencies:
     "@cosmjs/amino" "^0.26.0"
     "@cosmjs/encoding" "^0.26.0"
