@@ -4,6 +4,7 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
+import { DeFiWeb3Connector } from 'deficonnect'
 
 import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '../constants/chains'
@@ -51,6 +52,12 @@ export const walletconnect = new WalletConnectConnector({
   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
   rpc: NETWORK_URLS,
   qrcode: true,
+})
+
+export const deficonnect = new DeFiWeb3Connector({
+  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
+  rpc: NETWORK_URLS,
+  pollingInterval: 15000,
 })
 
 // mainnet only

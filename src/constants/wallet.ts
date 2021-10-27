@@ -2,12 +2,12 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import INJECTED_ICON_URL from '../assets/images/arrow-right.svg'
 import COINBASE_ICON_URL from '../assets/images/coinbaseWalletIcon.svg'
+import CRYPTOWALLET_ICON_URL from '../assets/images/cryptowalletIcon.webp'
 import FORTMATIC_ICON_URL from '../assets/images/fortmaticIcon.png'
 import METAMASK_ICON_URL from '../assets/images/metamask.png'
 import PORTIS_ICON_URL from '../assets/images/portisIcon.png'
 import WALLETCONNECT_ICON_URL from '../assets/images/walletConnectIcon.svg'
-import CRYPTOWALLET_ICON_URL from '../assets/images/cryptowalletIcon.webp'
-import { cryptoWallet, fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
+import { deficonnect, fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 
 interface WalletInfo {
   connector?: AbstractConnector
@@ -23,7 +23,7 @@ interface WalletInfo {
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   CRYPTO_WALLET: {
-    connector: cryptoWallet,
+    connector: deficonnect,
     name: 'Crypto.com | Wallet Extension',
     iconURL: CRYPTOWALLET_ICON_URL,
     description: 'Connect to Crypto.com | Wallet Extension',
