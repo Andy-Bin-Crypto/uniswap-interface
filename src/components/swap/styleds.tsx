@@ -1,11 +1,14 @@
+import { loadingOpacityMixin } from 'components/Loader/styled'
+import { TooltipContainer } from 'components/Tooltip'
 import { transparentize } from 'polished'
 import { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-
 import { AlertTriangle } from 'react-feather'
-import styled, { css } from 'styled-components'
 import { Text } from 'rebass'
+import styled, { css } from 'styled-components/macro'
+import { TYPE } from 'theme'
+
 import { AutoColumn } from '../Column'
+import TradePrice from './TradePrice'
 
 export const Wrapper = styled.div`
   position: relative;
@@ -42,11 +45,6 @@ export const SectionBreak = styled.div`
   background-color: ${({ theme }) => theme.bg3};
 `
 
-export const BottomGrouping = styled.div`
-  margin-top: ;
-  /* background-color: ${({ theme }) => theme.bg1}; */
-`
-
 export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
   color: ${({ theme, severity }) =>
     severity === 3 || severity === 4
@@ -56,55 +54,6 @@ export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
       : severity === 1
       ? theme.text1
       : theme.text2};
-`
-
-export const ErrorPill = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
-  border-radius: 8px;
-
-  color: ${({ theme, severity }) =>
-    severity === 3 || severity === 4
-      ? theme.red1
-      : severity === 2
-      ? theme.yellow2
-      : severity === 1
-      ? theme.text1
-      : theme.text3};
-
-  /* background-color: ${({ theme, severity }) =>
-    severity === 3 || severity === 4
-      ? transparentize(0.9, theme.red1)
-      : severity === 2
-      ? transparentize(0.9, theme.yellow2)
-      : severity === 1
-      ? transparentize(0.9, theme.text1)
-      : transparentize(0.9, theme.green1)}; */
-`
-
-export const StyledBalanceMaxMini = styled.button`
-  /* height: 22px; */
-  width: fit-content;
-  background-color: ${({ theme }) => theme.bg1};
-  border: none;
-  border-radius: 8px;
-  padding: 0;
-  font-size: 0.875rem;
-  font-weight: 400;
-  opacity: 0.6;
-  margin-right: 0.5rem;
-  cursor: pointer;
-  color: ${({ theme }) => theme.text1};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  float: right;
-
-  :hover {
-    background-color: ${({ theme }) => theme.bg2};
-  }
-  :focus {
-    background-color: ${({ theme }) => theme.bg2};
-    outline: none;
-  }
 `
 
 export const TruncatedText = styled(Text)`
@@ -183,19 +132,24 @@ export const SwapShowAcceptChanges = styled(AutoColumn)`
   border-radius: 12px;
   margin-top: 8px;
 `
-export const Separator = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: ${({ theme }) => theme.bg2};
+
+export const TransactionDetailsLabel = styled(TYPE.black)`
+  border-bottom: 1px solid ${({ theme }) => theme.bg2};
+  padding-bottom: 0.5rem;
 `
 
-export const V2TradeAlertWrapper = styled(Link)`
-  background-color: ${({ theme }) => theme.bg2};
-  display: flex;
-  align-items: center;
-  border-radius: 12px;
-  height: 22px;
-  margin-right: 0.5rem;
-  padding: 0 0.25rem 0 0.5rem;
-  text-decoration: none !important;
+export const ResponsiveTooltipContainer = styled(TooltipContainer)<{ origin?: string; width?: string }>`
+  background-color: ${({ theme }) => theme.bg0};
+  border: 1px solid ${({ theme }) => theme.bg2};
+  padding: 1rem;
+  width: ${({ width }) => width ?? 'auto'};
+
+  ${({ theme, origin }) => theme.mediaWidth.upToExtraSmall`
+    transform: scale(0.8);
+    transform-origin: ${origin ?? 'top left'};
+  `}
+`
+
+export const StyledTradePrice = styled(TradePrice)<{ $loading: boolean }>`
+  ${loadingOpacityMixin}
 `

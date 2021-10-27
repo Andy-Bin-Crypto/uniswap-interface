@@ -1,22 +1,25 @@
-import { useMemo } from 'react'
+import { Trans } from '@lingui/macro'
+import { Percent, Price, Token } from '@uniswap/sdk-core'
 import { Position } from '@uniswap/v3-sdk'
 import Badge from 'components/Badge'
+import RangeBadge from 'components/Badge/RangeBadge'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import { usePool } from 'hooks/usePools'
+import HoverInlineText from 'components/HoverInlineText'
+import Loader from 'components/Loader'
+import { RowBetween } from 'components/Row'
 import { useToken } from 'hooks/Tokens'
+import useIsTickAtLimit from 'hooks/useIsTickAtLimit'
+import { usePool } from 'hooks/usePools'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { Bound } from 'state/mint/v3/actions'
 import styled from 'styled-components/macro'
 import { HideSmall, MEDIA_WIDTHS, SmallOnly } from 'theme'
 import { PositionDetails } from 'types/position'
-import { Price, Token, Percent } from '@uniswap/sdk-core'
-import { formatPrice } from 'utils/formatCurrencyAmount'
-import Loader from 'components/Loader'
+import { formatTickPrice } from 'utils/formatTickPrice'
 import { unwrappedToken } from 'utils/unwrappedToken'
-import RangeBadge from 'components/Badge/RangeBadge'
-import { RowFixed } from 'components/Row'
-import HoverInlineText from 'components/HoverInlineText'
+
 import { DAI, USDC, USDT, WBTC, WETH9_EXTENDED } from '../../constants/tokens'
-import { Trans } from '@lingui/macro'
 
 const LinkRow = styled(Link)`
   align-items: center;
@@ -24,6 +27,9 @@ const LinkRow = styled(Link)`
   display: flex;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+
   justify-content: space-between;
   color: ${({ theme }) => theme.text1};
   margin: 8px 0;
@@ -32,25 +38,23 @@ const LinkRow = styled(Link)`
   font-weight: 500;
   background-color: ${({ theme }) => theme.bg1};
 
-  &:first-of-type {
-    margin: 0 0 8px 0;
-  }
   &:last-of-type {
     margin: 8px 0 0 0;
   }
   & > div:not(:first-child) {
-    text-align: right;
+    text-align: center;
   }
   :hover {
     background-color: ${({ theme }) => theme.bg2};
   }
+
   @media screen and (min-width: ${MEDIA_WIDTHS.upToSmall}px) {
-    flex-direction: row;
+    /* flex-direction: row; */
   }
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
-    row-gap: 24px;
+    row-gap: 12px;
   `};
 `
 
@@ -70,11 +74,14 @@ const RangeLineItem = styled(DataLineItem)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-self: flex-end;
+
+  margin-top: 4px;
+  width: 100%;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-  flex-direction: column;
-  row-gap: 4px;
+  background-color: ${({ theme }) => theme.bg2};
+    border-radius: 12px;
+    padding: 8px 0;
 `};
 `
 
@@ -97,6 +104,9 @@ const ExtentsText = styled.span`
   color: ${({ theme }) => theme.text3};
   font-size: 14px;
   margin-right: 4px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
 `
 
 const PrimaryPositionIdData = styled.div`
@@ -117,7 +127,7 @@ const DataText = styled.div`
   `};
 `
 
-export interface PositionListItemProps {
+interface PositionListItemProps {
   positionDetails: PositionDetails
 }
 
@@ -201,6 +211,8 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
     return undefined
   }, [liquidity, pool, tickLower, tickUpper])
 
+  const tickAtLimit = useIsTickAtLimit(feeAmount, tickLower, tickUpper)
+
   // prices
   const { priceLower, priceUpper, quote, base } = getPriceOrderingFromPositionForUI(position)
 
@@ -216,7 +228,7 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
 
   return (
     <LinkRow to={positionSummaryLink}>
-      <RowFixed>
+      <RowBetween>
         <PrimaryPositionIdData>
           <DoubleCurrencyLogo currency0={currencyBase} currency1={currencyQuote} size={18} margin />
           <DataText>
@@ -230,7 +242,7 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
           </Badge>
         </PrimaryPositionIdData>
         <RangeBadge removed={removed} inRange={!outOfRange} />
-      </RowFixed>
+      </RowBetween>
 
       {priceLower && priceUpper ? (
         <RangeLineItem>
@@ -239,23 +251,23 @@ export default function PositionListItem({ positionDetails }: PositionListItemPr
               <Trans>Min: </Trans>
             </ExtentsText>
             <Trans>
-              {formatPrice(priceLower, 5)} <HoverInlineText text={currencyQuote?.symbol} /> per{' '}
-              <HoverInlineText text={currencyBase?.symbol ?? ''} />
+              {formatTickPrice(priceLower, tickAtLimit, Bound.LOWER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
+              per <HoverInlineText text={currencyBase?.symbol ?? ''} />
             </Trans>
           </RangeText>{' '}
           <HideSmall>
             <DoubleArrow>⟷</DoubleArrow>{' '}
           </HideSmall>
           <SmallOnly>
-            <DoubleArrow>↕</DoubleArrow>{' '}
+            <DoubleArrow>⟷</DoubleArrow>{' '}
           </SmallOnly>
           <RangeText>
             <ExtentsText>
               <Trans>Max:</Trans>
             </ExtentsText>
             <Trans>
-              {formatPrice(priceUpper, 5)} <HoverInlineText text={currencyQuote?.symbol} /> per{' '}
-              <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} />
+              {formatTickPrice(priceUpper, tickAtLimit, Bound.UPPER)} <HoverInlineText text={currencyQuote?.symbol} />{' '}
+              per <HoverInlineText maxCharacters={10} text={currencyBase?.symbol} />
             </Trans>
           </RangeText>
         </RangeLineItem>

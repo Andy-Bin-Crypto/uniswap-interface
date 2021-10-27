@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+
 import { TYPE } from '../../theme'
 
 const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
@@ -30,7 +31,7 @@ const StatusText = styled(TYPE.main)<{ isActive?: boolean }>`
   color: ${({ theme, isActive }) => (isActive ? theme.text1 : theme.text3)};
 `
 
-export interface ToggleProps {
+interface ToggleProps {
   id?: string
   isActive: boolean
   bgColor: string

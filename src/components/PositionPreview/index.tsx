@@ -1,30 +1,34 @@
-import { useState, useCallback, useContext, ReactNode } from 'react'
-import { Position } from '@uniswap/v3-sdk'
-import { LightCard } from 'components/Card'
-import { AutoColumn } from 'components/Column'
-import { TYPE } from 'theme'
-import { RowBetween, RowFixed } from 'components/Row'
-import CurrencyLogo from 'components/CurrencyLogo'
-import { unwrappedToken } from 'utils/unwrappedToken'
-import { Break } from 'components/earn/styled'
 import { Trans } from '@lingui/macro'
 import { Currency } from '@uniswap/sdk-core'
-import RateToggle from 'components/RateToggle'
-import DoubleCurrencyLogo from 'components/DoubleLogo'
+import { Position } from '@uniswap/v3-sdk'
 import RangeBadge from 'components/Badge/RangeBadge'
-import { ThemeContext } from 'styled-components'
+import { LightCard } from 'components/Card'
+import { AutoColumn } from 'components/Column'
+import CurrencyLogo from 'components/CurrencyLogo'
+import DoubleCurrencyLogo from 'components/DoubleLogo'
+import { Break } from 'components/earn/styled'
+import RateToggle from 'components/RateToggle'
+import { RowBetween, RowFixed } from 'components/Row'
 import JSBI from 'jsbi'
+import { ReactNode, useCallback, useContext, useState } from 'react'
+import { Bound } from 'state/mint/v3/actions'
+import { ThemeContext } from 'styled-components/macro'
+import { TYPE } from 'theme'
+import { formatTickPrice } from 'utils/formatTickPrice'
+import { unwrappedToken } from 'utils/unwrappedToken'
 
 export const PositionPreview = ({
   position,
   title,
   inRange,
   baseCurrencyDefault,
+  ticksAtLimit,
 }: {
   position: Position
   title?: ReactNode
   inRange: boolean
   baseCurrencyDefault?: Currency | undefined
+  ticksAtLimit: { [bound: string]: boolean | undefined }
 }) => {
   const theme = useContext(ThemeContext)
 
@@ -121,7 +125,11 @@ export const PositionPreview = ({
               <TYPE.main fontSize="12px">
                 <Trans>Min Price</Trans>
               </TYPE.main>
-              <TYPE.mediumHeader textAlign="center">{`${priceLower.toSignificant(5)}`}</TYPE.mediumHeader>
+              <TYPE.mediumHeader textAlign="center">{`${formatTickPrice(
+                priceLower,
+                ticksAtLimit,
+                Bound.LOWER
+              )}`}</TYPE.mediumHeader>
               <TYPE.main textAlign="center" fontSize="12px">
                 <Trans>
                   {quoteCurrency.symbol} per {baseCurrency.symbol}
@@ -138,7 +146,11 @@ export const PositionPreview = ({
               <TYPE.main fontSize="12px">
                 <Trans>Max Price</Trans>
               </TYPE.main>
-              <TYPE.mediumHeader textAlign="center">{`${priceUpper.toSignificant(5)}`}</TYPE.mediumHeader>
+              <TYPE.mediumHeader textAlign="center">{`${formatTickPrice(
+                priceUpper,
+                ticksAtLimit,
+                Bound.UPPER
+              )}`}</TYPE.mediumHeader>
               <TYPE.main textAlign="center" fontSize="12px">
                 <Trans>
                   {quoteCurrency.symbol} per {baseCurrency.symbol}

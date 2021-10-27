@@ -1,55 +1,57 @@
+import { Contract } from '@ethersproject/contracts'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Trans } from '@lingui/macro'
+import { CurrencyAmount, Fraction, Percent, Price, Token } from '@uniswap/sdk-core'
+import { FeeAmount, Pool, Position, priceToClosestTick, TickMath } from '@uniswap/v3-sdk'
+import Badge, { BadgeVariant } from 'components/Badge'
+import { ButtonConfirmed } from 'components/Button'
+import { BlueCard, DarkGreyCard, LightCard, YellowCard } from 'components/Card'
+import DoubleCurrencyLogo from 'components/DoubleLogo'
+import FeeSelector from 'components/FeeSelector'
+import RangeSelector from 'components/RangeSelector'
+import RateToggle from 'components/RateToggle'
+import SettingsTab from 'components/Settings'
+import { Dots } from 'components/swap/styleds'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
+import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
+import { PoolState, usePool } from 'hooks/usePools'
+import useTheme from 'hooks/useTheme'
+import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
-import { useCallback, useMemo, useState, useEffect, ReactNode } from 'react'
-import { Fraction, Percent, Price, Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { AlertCircle, AlertTriangle, ArrowDown } from 'react-feather'
+import ReactGA from 'react-ga'
 import { Redirect, RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
+import { useAppDispatch } from 'state/hooks'
+import { Bound, resetMintState } from 'state/mint/v3/actions'
+import { useRangeHopCallbacks, useV3DerivedMintInfo, useV3MintActionHandlers } from 'state/mint/v3/hooks'
+import { useIsTransactionPending, useTransactionAdder } from 'state/transactions/hooks'
+import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
+import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
+import { unwrappedToken } from 'utils/unwrappedToken'
+
 import { AutoColumn } from '../../components/Column'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import FormattedCurrencyAmount from '../../components/FormattedCurrencyAmount'
 import { AutoRow, RowBetween, RowFixed } from '../../components/Row'
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
 import { WETH9_EXTENDED } from '../../constants/tokens'
+import { useToken } from '../../hooks/Tokens'
+import { usePairContract, useV2MigratorContract } from '../../hooks/useContract'
 import { useV2LiquidityTokenPermit } from '../../hooks/useERC20Permit'
 import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useTotalSupply } from '../../hooks/useTotalSupply'
 import { useActiveWeb3React } from '../../hooks/web3'
-import { useToken } from '../../hooks/Tokens'
-import { usePairContract, useV2MigratorContract } from '../../hooks/useContract'
 import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
+import { TransactionType } from '../../state/transactions/actions'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { BackArrow, ExternalLink, TYPE } from '../../theme'
 import { isAddress } from '../../utils'
 import { calculateGasMargin } from '../../utils/calculateGasMargin'
-import { getExplorerLink, ExplorerDataType } from '../../utils/getExplorerLink'
+import { currencyId } from '../../utils/currencyId'
+import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { BodyWrapper } from '../AppBody'
-import { PoolState, usePool } from 'hooks/usePools'
-import { FeeAmount, Pool, Position, priceToClosestTick, TickMath } from '@uniswap/v3-sdk'
-import { BlueCard, DarkGreyCard, LightCard, YellowCard } from 'components/Card'
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { Dots } from 'components/swap/styleds'
-import { ButtonConfirmed } from 'components/Button'
-import useTransactionDeadline from 'hooks/useTransactionDeadline'
-import { useUserSlippageToleranceWithDefault } from 'state/user/hooks'
-import ReactGA from 'react-ga'
-import { TransactionResponse } from '@ethersproject/providers'
-import { useIsTransactionPending, useTransactionAdder } from 'state/transactions/hooks'
-import { useV3DerivedMintInfo, useRangeHopCallbacks, useV3MintActionHandlers } from 'state/mint/v3/hooks'
-import { Bound, resetMintState } from 'state/mint/v3/actions'
-import { Trans } from '@lingui/macro'
-import { AlertCircle, AlertTriangle, ArrowDown } from 'react-feather'
-import FeeSelector from 'components/FeeSelector'
-import RangeSelector from 'components/RangeSelector'
-import RateToggle from 'components/RateToggle'
-import { Contract } from '@ethersproject/contracts'
-import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
-import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
-import useTheme from 'hooks/useTheme'
-import { unwrappedToken } from 'utils/unwrappedToken'
-import DoubleCurrencyLogo from 'components/DoubleLogo'
-import Badge, { BadgeVariant } from 'components/Badge'
-
-import { useAppDispatch } from 'state/hooks'
-import SettingsTab from 'components/Settings'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -176,7 +178,7 @@ function V2PairMigration({
 
   // the following is a small hack to get access to price range data/input handlers
   const [baseToken, setBaseToken] = useState(token0)
-  const { ticks, pricesAtTicks, invertPrice, invalidRange, outOfRange } = useV3DerivedMintInfo(
+  const { ticks, pricesAtTicks, invertPrice, invalidRange, outOfRange, ticksAtLimit } = useV3DerivedMintInfo(
     token0,
     token1,
     feeAmount,
@@ -270,7 +272,8 @@ function V2PairMigration({
       typeof tickLower !== 'number' ||
       typeof tickUpper !== 'number' ||
       !v3Amount0Min ||
-      !v3Amount1Min
+      !v3Amount1Min ||
+      !chainId
     )
       return
 
@@ -331,7 +334,7 @@ function V2PairMigration({
       .multicall(data)
       .then((gasEstimate) => {
         return migrator
-          .multicall(data, { gasLimit: calculateGasMargin(gasEstimate) })
+          .multicall(data, { gasLimit: calculateGasMargin(chainId, gasEstimate) })
           .then((response: TransactionResponse) => {
             ReactGA.event({
               category: 'Migrate',
@@ -340,7 +343,10 @@ function V2PairMigration({
             })
 
             addTransaction(response, {
-              summary: `Migrate ${currency0.symbol}/${currency1.symbol} liquidity to V3`,
+              type: TransactionType.MIGRATE_LIQUIDITY_V3,
+              baseCurrencyId: currencyId(currency0),
+              quoteCurrencyId: currencyId(currency1),
+              isFork: isNotUniswap,
             })
             setPendingMigrationHash(response.hash)
           })
@@ -349,6 +355,7 @@ function V2PairMigration({
         setConfirmingMigration(false)
       })
   }, [
+    chainId,
     isNotUniswap,
     migrator,
     noLiquidity,
@@ -541,10 +548,11 @@ function V2PairMigration({
             currencyA={invertPrice ? currency1 : currency0}
             currencyB={invertPrice ? currency0 : currency1}
             feeAmount={feeAmount}
+            ticksAtLimit={ticksAtLimit}
           />
 
           {outOfRange ? (
-            <YellowCard padding="8px 12px" borderRadius="12px">
+            <YellowCard padding="8px 12px" $borderRadius="12px">
               <RowBetween>
                 <AlertTriangle stroke={theme.yellow3} size="16px" />
                 <TYPE.yellow ml="12px" fontSize="12px">
@@ -557,7 +565,7 @@ function V2PairMigration({
           ) : null}
 
           {invalidRange ? (
-            <YellowCard padding="8px 12px" borderRadius="12px">
+            <YellowCard padding="8px 12px" $borderRadius="12px">
               <RowBetween>
                 <AlertTriangle stroke={theme.yellow3} size="16px" />
                 <TYPE.yellow ml="12px" fontSize="12px">

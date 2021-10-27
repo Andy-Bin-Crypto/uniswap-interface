@@ -1,6 +1,6 @@
+import { Trans } from '@lingui/macro'
 import PositionListItem from 'components/PositionListItem'
 import React from 'react'
-import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 import { MEDIA_WIDTHS } from 'theme'
 import { PositionDetails } from 'types/position'
@@ -34,7 +34,7 @@ const MobileHeader = styled.div`
   }
 `
 
-export type PositionListProps = React.PropsWithChildren<{
+type PositionListProps = React.PropsWithChildren<{
   positions: PositionDetails[]
 }>
 
@@ -47,7 +47,7 @@ export default function PositionList({ positions }: PositionListProps) {
           {positions && ' (' + positions.length + ')'}
         </div>
         <div>
-          <Trans>Price range</Trans>
+          <Trans>Status</Trans>
         </div>
       </DesktopHeader>
       <MobileHeader>

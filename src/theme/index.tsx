@@ -5,7 +5,8 @@ import styled, {
   css,
   DefaultTheme,
   ThemeProvider as StyledComponentsThemeProvider,
-} from 'styled-components'
+} from 'styled-components/macro'
+
 import { useIsDarkMode } from '../state/user/hooks'
 import { Colors } from './styled'
 
@@ -18,6 +19,21 @@ export const MEDIA_WIDTHS = {
   upToSmall: 720,
   upToMedium: 960,
   upToLarge: 1280,
+}
+
+// Migrating to a standard z-index system https://getbootstrap.com/docs/5.0/layout/z-index/
+// Please avoid using deprecated numbers
+export enum Z_INDEX {
+  deprecated_zero = 0,
+  deprecated_content = 1,
+  dropdown = 1000,
+  sticky = 1020,
+  fixed = 1030,
+  modalBackdrop = 1040,
+  offcanvas = 1050,
+  modal = 1060,
+  popover = 1070,
+  tooltip = 1080,
 }
 
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
@@ -35,8 +51,9 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 const white = '#FFFFFF'
 const black = '#000000'
 
-export function colors(darkMode: boolean): Colors {
+function colors(darkMode: boolean): Colors {
   return {
+    darkMode,
     // base
     white,
     black,
@@ -69,7 +86,7 @@ export function colors(darkMode: boolean): Colors {
     primary5: darkMode ? '#153d6f70' : '#FDEAF1',
 
     // color text
-    primaryText1: darkMode ? '#438BF0' : '#D50066',
+    primaryText1: darkMode ? '#5090ea' : '#D50066',
 
     // secondary colors
     secondary1: darkMode ? '#2172E5' : '#E8006F',
@@ -96,7 +113,7 @@ export function colors(darkMode: boolean): Colors {
   }
 }
 
-export function theme(darkMode: boolean): DefaultTheme {
+function theme(darkMode: boolean): DefaultTheme {
   return {
     ...colors(darkMode),
 

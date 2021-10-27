@@ -1,6 +1,7 @@
-import { BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber'
 import JSBI from 'jsbi'
 import { useMemo } from 'react'
+
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useV3NFTPositionManagerContract } from './useContract'
 
@@ -33,7 +34,10 @@ export function usePositionTokenURI(tokenId: TokenId | undefined): UsePositionTo
     () => [tokenId instanceof BigNumber ? tokenId.toHexString() : tokenId?.toString(16)],
     [tokenId]
   )
-  const { result, error, loading, valid } = useSingleCallResult(contract, 'tokenURI', inputs, NEVER_RELOAD, 1_600_000)
+  const { result, error, loading, valid } = useSingleCallResult(contract, 'tokenURI', inputs, {
+    ...NEVER_RELOAD,
+    gasRequired: 3_000_000,
+  })
 
   return useMemo(() => {
     if (error || !valid || !tokenId) {

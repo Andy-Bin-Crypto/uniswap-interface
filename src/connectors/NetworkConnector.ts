@@ -1,5 +1,5 @@
-import { ConnectorUpdate } from '@web3-react/types'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import { ConnectorUpdate } from '@web3-react/types'
 import invariant from 'tiny-invariant'
 
 interface NetworkConnectorArguments {
@@ -28,7 +28,7 @@ interface BatchItem {
   reject: (error: Error) => void
 }
 
-export class MiniRpcProvider implements AsyncSendable {
+class MiniRpcProvider implements AsyncSendable {
   public readonly isMetaMask: false = false
   public readonly chainId: number
   public readonly url: string

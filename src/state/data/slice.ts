@@ -1,59 +1,29 @@
+import { BaseQueryFn } from '@reduxjs/toolkit/query'
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { ClientError, gql, GraphQLClient } from 'graphql-request'
 import { SupportedChainId } from 'constants/chains'
-import { AppState } from 'state'
-import { BaseQueryApi, BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { DocumentNode } from 'graphql'
+import { ClientError, gql, GraphQLClient } from 'graphql-request'
+import { AppState } from 'state'
 
-export const UNISWAP_V3_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
+// List of supported subgraphs. Note that the app currently only support one active subgraph at a time
+const CHAIN_SUBGRAPH_URL: Record<number, string> = {
+  [SupportedChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+  [SupportedChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
 
-export const graphqlRequestBaseQuery = (): BaseQueryFn<
-  { document: string | DocumentNode; variables?: any },
-  unknown,
-  Pick<ClientError, 'name' | 'message' | 'stack'>,
-  Partial<Pick<ClientError, 'request' | 'response'>>
-> => {
-  return async ({ document, variables }, { getState }: BaseQueryApi) => {
-    try {
-      const chainId = (getState() as AppState).application.chainId
+  [SupportedChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/ianlapham/arbitrum-minimal',
 
-      let client: GraphQLClient | null = null
-
-      switch (chainId) {
-        case SupportedChainId.MAINNET:
-          client = new GraphQLClient(UNISWAP_V3_GRAPH_URL)
-          break
-        default:
-          return {
-            error: {
-              name: 'UnsupportedChainId',
-              message: `Subgraph queries again ChainId ${chainId} are not supported.`,
-              stack: '',
-            },
-          }
-      }
-
-      return { data: await client.request(document, variables), meta: {} }
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const { name, message, stack, request, response } = error
-        return { error: { name, message, stack }, meta: { request, response } }
-      }
-      throw error
-    }
-  }
+  [SupportedChainId.OPTIMISM]: 'https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-optimism-dev',
 }
 
-export const client = new GraphQLClient(UNISWAP_V3_GRAPH_URL)
 export const api = createApi({
   reducerPath: 'dataApi',
   baseQuery: graphqlRequestBaseQuery(),
   endpoints: (builder) => ({
-    getAllV3Ticks: builder.query({
+    allV3Ticks: builder.query({
       query: ({ poolAddress, skip = 0 }) => ({
         document: gql`
           query allV3Ticks($poolAddress: String!, $skip: Int!) {
-            ticks(first: 1000, skip: $skip, where: { poolAddress: $poolAddress }) {
+            ticks(first: 1000, skip: $skip, where: { poolAddress: $poolAddress }, orderBy: tickIdx) {
               tickIdx
               liquidityNet
               price0
@@ -67,10 +37,10 @@ export const api = createApi({
         },
       }),
     }),
-    getFeeTierDistribution: builder.query({
+    feeTierDistribution: builder.query({
       query: ({ token0, token1 }) => ({
         document: gql`
-          query pools($token0: String!, $token1: String!) {
+          query feeTierDistribution($token0: String!, $token1: String!) {
             _meta {
               block {
                 number
@@ -105,4 +75,36 @@ export const api = createApi({
   }),
 })
 
-export const { useGetFeeTierDistributionQuery } = api
+// Graphql query client wrapper that builds a dynamic url based on chain id
+function graphqlRequestBaseQuery(): BaseQueryFn<
+  { document: string | DocumentNode; variables?: any },
+  unknown,
+  Pick<ClientError, 'name' | 'message' | 'stack'>,
+  Partial<Pick<ClientError, 'request' | 'response'>>
+> {
+  return async ({ document, variables }, { getState }) => {
+    try {
+      const chainId = (getState() as AppState).application.chainId
+
+      const subgraphUrl = chainId ? CHAIN_SUBGRAPH_URL[chainId] : undefined
+
+      if (!subgraphUrl) {
+        return {
+          error: {
+            name: 'UnsupportedChainId',
+            message: `Subgraph queries against ChainId ${chainId} are not supported.`,
+            stack: '',
+          },
+        }
+      }
+
+      return { data: await new GraphQLClient(subgraphUrl).request(document, variables), meta: {} }
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const { name, message, stack, request, response } = error
+        return { error: { name, message, stack }, meta: { request, response } }
+      }
+      throw error
+    }
+  }
+}
