@@ -9,7 +9,7 @@ import getLibrary from '../utils/getLibrary'
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
-import { DeFiLinkConnector } from 'defilink'
+import { DeFiWeb3Connector } from 'deficonnect'
 
 const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
@@ -64,7 +64,7 @@ export const walletconnect = new WalletConnectConnector({
   pollingInterval: 15000,
 })
 
-export const cryptoWallet = new DeFiLinkConnector({
+export const cryptoWallet = new DeFiWeb3Connector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
   rpc: NETWORK_URLS,
   pollingInterval: 15000,
