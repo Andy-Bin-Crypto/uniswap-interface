@@ -45,15 +45,20 @@ export function useEagerConnect() {
           })
         } else {
           if (isMobile && window.ethereum) {
-            activate(injected, undefined, true).catch(() => {
+            if (window.navigator.userAgent.includes('DeFiWallet')) {
               setTried(true)
-            })
+            } else {
+              activate(injected, undefined, true).catch(() => {
+                setTried(true)
+              })
+            }
           } else {
             setTried(true)
           }
         }
       })
     }
+    setTried(true)
   }, [activate, active, triedSafe])
 
   // wait until we get confirmation of a connection to flip the flag
@@ -63,9 +68,6 @@ export function useEagerConnect() {
     }
   }, [active])
 
-  if (window.navigator.userAgent.includes('DeFiWallet')) {
-    return false
-  }
   return tried
 }
 
