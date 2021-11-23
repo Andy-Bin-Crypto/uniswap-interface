@@ -63,7 +63,7 @@ export function useEagerConnect() {
     }
   }, [active])
 
-  if(window.navigator.userAgent.includes('DeFiWallet')) {
+  if (window.navigator.userAgent.includes('DeFiWallet')) {
     return false
   }
   return tried
