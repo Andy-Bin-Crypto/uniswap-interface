@@ -9,6 +9,7 @@ import { DeFiWeb3Connector } from 'deficonnect'
 import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '../constants/chains'
 import getLibrary from '../utils/getLibrary'
+import { DeFiConnector } from './DefiConnector'
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 
@@ -20,7 +21,7 @@ if (typeof INFURA_KEY === 'undefined') {
   throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
 }
 
-const NETWORK_URLS: { [key in SupportedChainId]: string } = {
+export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
   [SupportedChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.RINKEBY]: `https://rinkeby.infura.io/v3/${INFURA_KEY}`,
   [SupportedChainId.ROPSTEN]: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
@@ -54,10 +55,8 @@ export const walletconnect = new WalletConnectConnector({
   qrcode: true,
 })
 
-export const deficonnect = new DeFiWeb3Connector({
+export const deficonnect = new DeFiConnector({
   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
-  rpc: NETWORK_URLS,
-  pollingInterval: 15000,
 })
 
 // mainnet only
