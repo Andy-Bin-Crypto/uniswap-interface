@@ -1,15 +1,14 @@
+import { DeFiWeb3Connector } from '@deficonnect/web3-connector'
 import { Web3Provider } from '@ethersproject/providers'
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { PortisConnector } from '@web3-react/portis-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
-import { DeFiWeb3Connector } from 'deficonnect'
 
 import UNISWAP_LOGO_URL from '../assets/svg/logo.svg'
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '../constants/chains'
 import getLibrary from '../utils/getLibrary'
-import { DeFiConnector } from './DefiConnector'
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 
@@ -35,7 +34,7 @@ export const NETWORK_URLS: { [key in SupportedChainId]: string } = {
 
 export const network = new NetworkConnector({
   urls: NETWORK_URLS,
-  defaultChainId: 1,
+  defaultChainId: window.location.hash?.includes('chain=ropsten') ? 3 : 1,
 })
 
 let networkLibrary: Web3Provider | undefined
@@ -55,8 +54,12 @@ export const walletconnect = new WalletConnectConnector({
   qrcode: true,
 })
 
-export const deficonnect = new DeFiConnector({
+export const deficonnect = new DeFiWeb3Connector({
   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
+  appName: 'Uniswap',
+  chainType: 'eth',
+  chainId: window.location.hash?.includes('chain=ropsten') ? '3' : '1',
+  rpcUrls: NETWORK_URLS,
 })
 
 // mainnet only
