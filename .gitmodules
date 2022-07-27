@@ -1,0 +1,3 @@
+[submodule "deficonnect-monorepo"]
+	path = deficonnect-monorepo
+	url = https://github.com/crypto-com/deficonnect-monorepo

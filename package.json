@@ -81,7 +81,6 @@
     "cross-env": "^7.0.3",
     "cypress": "^7.7.0",
     "d3": "^7.0.0",
-    "deficonnect": "^1.1.7",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
@@ -133,7 +132,8 @@
     "web-vitals": "^2.1.0",
     "workbox-core": "^6.1.0",
     "workbox-precaching": "^6.1.0",
-    "workbox-routing": "^6.1.0"
+    "workbox-routing": "^6.1.0",
+    "@deficonnect/web3-connector": "file:./deficonnect-monorepo/packages/web3-connector"
   },
   "resolutions": {
     "@walletconnect/ethereum-provider": "1.6.5"
@@ -147,8 +147,9 @@
     "i18n:extract": "lingui extract --locale en-US",
     "i18n:compile": "yarn i18n:extract && lingui compile",
     "postinstall": "yarn contracts:compile && yarn graphql:generate && yarn i18n:compile",
+    "build:lib": "cd deficonnect-monorepo && npm run bootstrap && npm run build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "yarn build:lib && react-scripts build",
     "test": "react-scripts test --env=./custom-test-env.js",
     "test:e2e": "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run --record'",
     "bundle": "microbundle --tsconfig tsconfig.lib.json src/lib/index.tsx --format esm,cjs",
@@ -172,6 +173,5 @@
       "last 1 safari version"
     ]
   },
-  "license": "GPL-3.0-or-later",
-  "dependencies": {}
+  "license": "GPL-3.0-or-later"
 }

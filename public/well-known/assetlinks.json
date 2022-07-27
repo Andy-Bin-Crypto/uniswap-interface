@@ -1,0 +1,26 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.defi.wallet",
+      "sha256_cert_fingerprints": [
+        "0B:8B:34:AB:B5:5C:67:13:DC:8A:AE:12:61:C5:04:61:64:D3:AB:DB:B9:A8:E4:70:1A:B1:F6:FF:E3:79:62:2A"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.defi.wallet",
+      "sha256_cert_fingerprints": [
+        "92:9E:3C:EF:D9:57:1D:53:56:7D:19:61:F5:2C:54:D5:94:F5:0E:3C:B7:61:C5:4F:6B:5F:0B:F5:F7:45:D5:FE"
+      ]
+    }
+  }
+]
