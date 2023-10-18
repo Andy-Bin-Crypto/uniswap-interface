@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unused-modules */
 import { Provider } from '@web3-react/types'
+import EventEmitter from 'events'
 
 export interface EIP6963ProviderInfo {
   uuid: string
@@ -22,11 +23,12 @@ export interface EIP6963AnnounceProviderEvent extends Event {
   detail: EIP6963ProviderDetail
 }
 
-export class EIP6963Provider implements Provider {
+export class EIP6963Provider extends EventEmitter implements Provider {
   currentProvider?: EVMProviderDetected
   providerOptionMap: Map<string, EVMProviderDetected> = new Map()
 
   constructor() {
+    super()
     window.addEventListener('eip6963:announceProvider', this.onAnnounceProvider.bind(this) as EventListener)
     window.dispatchEvent(new Event('eip6963:requestProvider'))
   }
@@ -38,8 +40,11 @@ export class EIP6963Provider implements Provider {
       accounts: [],
     }
 
+    for (const eventName in ['request', 'disconnect', 'chainChanged', 'accountsChanged']) {
+      announcedProvider.provider.on(eventName, (event) => this.proxyEvent(eventName, event))
+    }
+
     this.providerOptionMap.set(announcedProvider.info.uuid, announcedProvider)
-    this.currentProvider = announcedProvider
     console.log('cartcrom', this)
   }
 
@@ -51,13 +56,20 @@ export class EIP6963Provider implements Provider {
   }
 
   on(eventName: string | symbol, listener: (...args: any[]) => void): this {
+    // TODO: make sure this is proxied
     this.currentProvider?.provider.on(eventName, listener)
     return this
   }
 
   removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
+    // TODO: make sure this is proxied
     this.currentProvider?.provider.removeListener(eventName, listener)
     return this
+  }
+
+  proxyEvent(eventName: string, event: unknown): void {
+    console.log('cartcrom', eventName, event)
+    this.emit(eventName, event)
   }
 
   setCurrentProvider(uuid: string) {
