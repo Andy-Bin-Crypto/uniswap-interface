@@ -215,9 +215,9 @@ export const connections = [
   injectedConnection,
   walletConnectV2Connection,
   coinbaseWalletConnection,
+  eip6963Connection,
   networkConnection,
   deprecatedNetworkConnection,
-  eip6963Connection,
 ]
 
 export function getConnection(c: Connector | ConnectionType) {
