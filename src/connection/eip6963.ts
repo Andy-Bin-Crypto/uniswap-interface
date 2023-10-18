@@ -27,6 +27,8 @@ export class EIP6963Provider extends EventEmitter implements Provider {
   currentProvider?: EVMProviderDetected
   providerOptionMap: Map<string, EVMProviderDetected> = new Map()
 
+  proxyListeners: { [eventName: string]: (() => void)[] } = {}
+
   constructor() {
     super()
     window.addEventListener('eip6963:announceProvider', this.onAnnounceProvider.bind(this) as EventListener)
@@ -40,10 +42,6 @@ export class EIP6963Provider extends EventEmitter implements Provider {
       accounts: [],
     }
 
-    for (const eventName in ['request', 'disconnect', 'chainChanged', 'accountsChanged']) {
-      announcedProvider.provider.on(eventName, (event) => this.proxyEvent(eventName, event))
-    }
-
     this.providerOptionMap.set(announcedProvider.info.uuid, announcedProvider)
     console.log('cartcrom', this)
   }
@@ -55,24 +53,19 @@ export class EIP6963Provider extends EventEmitter implements Provider {
     return response
   }
 
-  on(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    // TODO: make sure this is proxied
-    this.currentProvider?.provider.on(eventName, listener)
-    return this
-  }
-
-  removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    // TODO: make sure this is proxied
-    this.currentProvider?.provider.removeListener(eventName, listener)
-    return this
-  }
-
-  proxyEvent(eventName: string, event: unknown): void {
-    console.log('cartcrom', eventName, event)
-    this.emit(eventName, event)
-  }
-
   setCurrentProvider(uuid: string) {
-    this.currentProvider = this.providerOptionMap.get(uuid)
+    const oldProvider = this.currentProvider
+    const newProvider = (this.currentProvider = this.providerOptionMap.get(uuid))
+    for (const eventName in this.eventNames) {
+      // proxyListener must be referentially stable to prevent memory leaks
+      // pull them from proxyListeners to keep them stable
+      oldProvider?.provider.removeListener(eventName, proxyListener)
+      newProvider?.provider.on(eventName, proxyListener)
+      // this.currentProvider?.provider.on(eventName, (event) => {
+      //   if (uuid === this.currentProvider?.info.uuid) {
+      //     this.emit(eventName, event)
+      //   }
+      // })
+    }
   }
 }
