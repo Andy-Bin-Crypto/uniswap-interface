@@ -10,6 +10,7 @@ export enum ConnectionType {
   NETWORK = 'NETWORK',
   GNOSIS_SAFE = 'GNOSIS_SAFE',
   DEPRECATED_NETWORK = 'DEPRECATED_NETWORK',
+  EIP_6963 = 'EIP_6963',
 }
 
 export function toConnectionType(value = ''): ConnectionType | undefined {

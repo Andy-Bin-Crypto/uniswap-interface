@@ -1,10 +1,11 @@
 import { ChainId } from '@uniswap/sdk-core'
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
 import { initializeConnector } from '@web3-react/core'
+import { EIP1193 } from '@web3-react/eip1193'
 import { GnosisSafe } from '@web3-react/gnosis-safe'
 import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
-import { Actions, Connector } from '@web3-react/types'
+import { Actions, Connector, Web3ReactStateUpdate } from '@web3-react/types'
 import GNOSIS_ICON from 'assets/images/gnosis.png'
 import UNISWAP_LOGO from 'assets/svg/logo.svg'
 import COINBASE_ICON from 'assets/wallets/coinbase-icon.svg'
@@ -15,12 +16,37 @@ import { isMobile, isNonIOSPhone } from 'utils/userAgent'
 
 import { RPC_URLS } from '../constants/networks'
 import { DEPRECATED_RPC_PROVIDERS, RPC_PROVIDERS } from '../constants/providers'
+import { EIP6963Provider } from './eip6963'
 import { Connection, ConnectionType } from './types'
 import { getInjection, getIsCoinbaseWallet, getIsInjected, getIsMetaMaskWallet } from './utils'
 import { UniwalletConnect as UniwalletWCV2Connect, WalletConnectV2 } from './WalletConnectV2'
 
 function onError(error: Error) {
   console.debug(`web3-react error: ${error}`)
+}
+
+export const eip6963Provider = new EIP6963Provider()
+
+const [eip1193, eip1193hooks] = initializeConnector<EIP1193>(
+  (actions) =>
+    new EIP1193({
+      actions: {
+        ...actions,
+        update: (stateUpdate: Web3ReactStateUpdate) => {
+          console.log('cartcrom', 'update', stateUpdate)
+          actions.update(stateUpdate)
+        },
+      },
+      provider: eip6963Provider,
+    })
+)
+
+export const eip6963Connection: Connection = {
+  getName: () => 'EIP6963',
+  connector: eip1193,
+  hooks: eip1193hooks,
+  type: ConnectionType.EIP_6963,
+  shouldDisplay: () => false,
 }
 
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
@@ -191,6 +217,7 @@ export const connections = [
   coinbaseWalletConnection,
   networkConnection,
   deprecatedNetworkConnection,
+  eip6963Connection,
 ]
 
 export function getConnection(c: Connector | ConnectionType) {
@@ -216,6 +243,8 @@ export function getConnection(c: Connector | ConnectionType) {
         return deprecatedNetworkConnection
       case ConnectionType.GNOSIS_SAFE:
         return gnosisSafeConnection
+      case ConnectionType.EIP_6963:
+        return eip6963Connection
     }
   }
 }

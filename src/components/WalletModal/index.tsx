@@ -3,7 +3,7 @@ import IconButton from 'components/AccountDrawer/IconButton'
 import { AutoColumn } from 'components/Column'
 import { Settings } from 'components/Icons/Settings'
 import { AutoRow } from 'components/Row'
-import { connections, deprecatedNetworkConnection, networkConnection } from 'connection'
+import { connections, deprecatedNetworkConnection, eip6963Provider, networkConnection } from 'connection'
 import { ActivationStatus, useActivationState } from 'connection/activate'
 import { isSupportedChain } from 'constants/chains'
 import { useFallbackProviderEnabled } from 'featureFlags/flags/fallbackProvider'
@@ -13,7 +13,7 @@ import { ThemedText } from 'theme/components'
 import { flexColumnNoWrap } from 'theme/styles'
 
 import ConnectionErrorView from './ConnectionErrorView'
-import Option from './Option'
+import Option, { Eip6963Option } from './Option'
 import PrivacyPolicyNotice from './PrivacyPolicyNotice'
 
 const Wrapper = styled.div`
@@ -53,7 +53,7 @@ export default function WalletModal({ openSettings }: { openSettings: () => void
       }
     }
   }, [chainId, connector, fallbackProviderEnabled])
-
+  eip6963Provider.providerOptionMap.values()
   return (
     <Wrapper data-testid="wallet-modal">
       <AutoRow justify="space-between" width="100%" marginBottom="16px">
@@ -70,6 +70,12 @@ export default function WalletModal({ openSettings }: { openSettings: () => void
               .map((connection) => (
                 <Option key={connection.getName()} connection={connection} />
               ))}
+          </OptionGrid>
+          <ThemedText.BodyPrimary>EIP6963 wallets</ThemedText.BodyPrimary>
+          <OptionGrid>
+            {Array.from(eip6963Provider.providerOptionMap.values()).map((providerOption) => (
+              <Eip6963Option key={providerOption.info.uuid} option={providerOption} />
+            ))}
           </OptionGrid>
           <PrivacyPolicyWrapper>
             <PrivacyPolicyNotice />

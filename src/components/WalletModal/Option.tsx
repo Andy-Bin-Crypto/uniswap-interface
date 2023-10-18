@@ -3,7 +3,9 @@ import { useWeb3React } from '@web3-react/core'
 import { TraceEvent } from 'analytics'
 import { useToggleAccountDrawer } from 'components/AccountDrawer'
 import Loader from 'components/Icons/LoadingSpinner'
+import { eip6963Connection, eip6963Provider } from 'connection'
 import { ActivationStatus, useActivationState } from 'connection/activate'
+import { EVMProviderDetected } from 'connection/eip6963'
 import { Connection } from 'connection/types'
 import styled from 'styled-components'
 import { useIsDarkMode } from 'theme/components/ThemeToggle'
@@ -107,6 +109,50 @@ export default function Option({ connection }: OptionProps) {
               <img src={connection.getIcon?.(isDarkMode)} alt={connection.getName()} />
             </IconWrapper>
             <HeaderText>{connection.getName()}</HeaderText>
+          </OptionCardLeft>
+          {isCurrentOptionPending && <Loader />}
+        </OptionCardClickable>
+      </TraceEvent>
+    </Wrapper>
+  )
+}
+
+export function Eip6963Option({ option }: { option: EVMProviderDetected }) {
+  const { activationState, tryActivation } = useActivationState()
+  const toggleAccountDrawer = useToggleAccountDrawer()
+  const { chainId } = useWeb3React()
+  const activate = () => {
+    eip6963Provider.setCurrentProvider(option.info.uuid)
+    tryActivation(eip6963Connection, toggleAccountDrawer, chainId)
+  }
+
+  const isSomeOptionPending = activationState.status === ActivationStatus.PENDING
+  const isCurrentOptionPending =
+    isSomeOptionPending &&
+    activationState.connection.type === eip6963Connection.type &&
+    eip6963Provider.currentProvider === option
+
+  const { icon, name } = option.info
+
+  return (
+    <Wrapper disabled={isSomeOptionPending}>
+      <TraceEvent
+        events={[BrowserEvent.onClick]}
+        name={InterfaceEventName.WALLET_SELECTED}
+        properties={{ wallet_type: name }}
+        element={InterfaceElementName.WALLET_TYPE_OPTION}
+      >
+        <OptionCardClickable
+          disabled={isSomeOptionPending}
+          onClick={activate}
+          selected={isCurrentOptionPending}
+          data-testid={`wallet-option-${eip6963Connection.type}`}
+        >
+          <OptionCardLeft>
+            <IconWrapper>
+              <img src={icon} alt={name} />
+            </IconWrapper>
+            <HeaderText>{name}</HeaderText>
           </OptionCardLeft>
           {isCurrentOptionPending && <Loader />}
         </OptionCardClickable>
